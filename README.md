@@ -3,7 +3,7 @@ A simple Git cheats sheet.
 
 # Básicos  
 *Estos son los comandos mínimos que se deben conocer para el trabajo diario*  
-git help <command>  
+    git help <command>  
 git clone <uri> namedir --> clona usando como nombre de directorio namedir.  
 git add<dir> --> añade recursivamente todos los archivos del dir.  
 git diff --staged --> compares staged changes with last commit  
