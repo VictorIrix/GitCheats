@@ -34,6 +34,7 @@ git stash pop --> elimina el primero en la pila. O drop
   
 # Logs  
 *Después de haber hecho varias confirmaciones, o si has clonado un repositorio que ya tenía un histórico de confirmaciones, probablemente quieras mirar atrás para ver qué modificaciones se han llevado a cabo. La herramienta más básica y potente para hacer esto es el comando git log.*  
+  
 git log -p -2 --> Muestra 2 últimos commits con diff  
 git log --stat  
 git log --pretty <short|full|fuller>  
@@ -64,6 +65,7 @@ git push -u bitbucket -all --> Subir el proyecto a bitbucket. A partir de ahora 
   
 # Tag --> Marcar puntos importantes --> Releases  
 *Son puntos específicos en la historia como importantes. Generalmente la gente usa esta funcionalidad para marcar puntos donde se ha lanzado alguna versión (v1.0, y así sucesivamente)*  
+  
 git tag --> muestra las etiquetas actuales  
 git tag -l 'v1.4.2.*' --> acepta regex  
 -- *Dos tipos de tag:*  
