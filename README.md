@@ -176,7 +176,7 @@ Una linea de no más de 50 caracteres, seguida de otra línea en blanco seguida 
 2) git checkout -b featureA  
 3) git commit  
 4) git remote add myFork <url>  
-5) git push myFork featureA  
+5) git push origin master 
 6) git request-pull origin/master myFork >>----> Esto es equivalente a realizar un pull request en el navegador.
   
 Buena practica tener siempre una rama master que apunte a origin/master, para estar siempre actualizado con los ultimos cambios en el proyecto original. De este modo cada actulización que haga el propietario del proyecto estará disponible para nosotros. Es un modo de estar al día con los cambios que realicen otros miembros de la comunidad.  
