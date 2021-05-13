@@ -184,6 +184,3 @@ Buena practica tener siempre una rama master que apunte a origin/master, para es
 
  © Victor Manuel Rodriguez Padilla ®
           █║▌│█│║▌║││█║▌║▌║
-
-
-Muchas gracias por la clase
