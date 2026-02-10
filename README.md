@@ -1,186 +1,380 @@
-# GitChetos
-A simple Git cheats sheet. 
+# GitChetos 🧠
+A practical Git cheat sheet for day-to-day work, including **both Merge and Rebase workflows**.
 
-# Básicos  
-*Estos son los comandos mínimos que se deben conocer para el trabajo diario*  
+> This is intentionally task-oriented: **command + when to use + example**.
+
+---
+
+## Table of contents
+- [Top 20 commands (80/20)](#top-20-commands-8020)
+- [Setup](#setup)
+- [Daily loop](#daily-loop)
+- [Stage changes](#stage-changes)
+- [Commit](#commit)
+- [Undo & fix mistakes](#undo--fix-mistakes)
+- [Branches](#branches)
+- [Merge workflow](#merge-workflow)
+- [Rebase workflow](#rebase-workflow)
+- [Remotes](#remotes)
+- [Stash](#stash)
+- [Logs & inspect](#logs--inspect)
+- [Tags & releases](#tags--releases)
+- [Cleaning & maintenance](#cleaning--maintenance)
+- [Emergencies (lifesavers)](#emergencies-lifesavers)
+- [Contributing flow (fork + PR)](#contributing-flow-fork--pr)
+
+---
+
+## Top 20 commands (80/20)
 ```bash
-$ git help <command>  
-$ git clone `<uri>` namedir >>----> clona usando como nombre de directorio namedir.  
-$ git add `<dir>` >>----> añade recursivamente todos los archivos del dir.  
-$ git diff --staged >>----> compares staged changes with last commit  
-$ git commit -v >>----> muestra el diff en el editor  
-git commit -a -m "mensaje" >>----> automatically stage tracked files. No hace falta git add  
-git rm --cached `<file or regexp>` >>----> Git no realiza un seguimiento del archivo, pero los deja en el directorio de trabajo. Útil cuando se olvida añadir archivos al .gitignore y ya hemos agregado dichos archivos al repositorio.  
-git rm `<file>` >>----> borrarlos con git siempre.  
-git rm -f `<file>` >>----> si ya está modificado y en el index.  
-git mv `<file>` `<renam`ed_file>  
-gitk >>----> tcl/tk. Herramienta gráfica para git  
-git commit --amend >>----> Modificar el mensaje del último commit  
-git reset HEAD `<file>` >>----> to unstage  
-git checkout -- `<file>` >>----> Descartar cambios en el directorio de trabajo.  
+git status -sb
+git clone <url> [dir]
+
+git add -A
+git add -p
+git commit -m "message"
+git commit --amend
+
+git pull --rebase
+git fetch --all --prune
+git push -u origin <branch>
+
+git switch <branch>
+git switch -c <new-branch>
+git restore <file>
+git restore --staged <file>
+
+git log --oneline --decorate --graph --all
+git diff
+git diff --staged
+git show <ref>
+
+git stash push -m "wip" -u
+git stash pop
+
+git reflog
 ```
-  
-# Añadir Archivos  
-git add -i >>----> interactive staggin  
-git add -p >>----> crea patch  
-  
-# Stash  
-*Según se está trabajando en un apartado de un proyecto, normalmente el espacio de trabajo suele estar en un estado inconsistente. Pero puede que se necesite cambiar de rama durante un breve tiempo para ponerse a trabajar en algún otro tema urgente. Esto plantea el problema de confirmar cambios en un trabajo medio hecho, simplemente para poder volver a ese punto más tarde. Y su solución es el comando 'git stash'.*  
-  
-*Este comando de guardado rápido (stashing) toma el estado del espacio de trabajo, con todas las modificaciones en los archivos bajo control de cambios, y lo guarda en una pila provisional. Desde allí, se podrán recuperar posteriormente y volverlas a aplicar de nuevo sobre el espacio de trabajo.*  
-  
-git stash >>----> guarda el estado en una pila y limpia el directorio para poder cambiar de rama  
-git stash list >>----> muestra la pila  
-git stash apply >>----> vuelve al estado original del dir. Stash{n} especifica uno concreto Y –index reaplica los cambios stagged  
-git stash pop >>----> elimina el primero en la pila. O drop  
-  
-# Logs  
-*Después de haber hecho varias confirmaciones, o si has clonado un repositorio que ya tenía un histórico de confirmaciones, probablemente quieras mirar atrás para ver qué modificaciones se han llevado a cabo. La herramienta más básica y potente para hacer esto es el comando git log.*  
-  
-git log -p -2 >>----> Muestra 2 últimos commits con diff  
-git log --stat  
-git log --pretty <short|full|fuller>  
-git log --pretty=format:"%h - %an, %ar : %s"  
-git log --pretty=format;"%h %s" --graph  
-git log --since=2.weeks  
-git log <branch> --not master >>----> Muestra commit de <branch> sin incluir los de master  
-git log --abbrev-commit --pretty=oneline  
-git diff master...contrib >>----> Muestra solo el trabajo que la rama contrib actual ha introducido desde su antecesor común con master  
-git log <branch1>..<branch2> >>----> Commits de branch2 que no están en branch1  
-git log origin/master..master >>----> Muestra qué commits se van a enviar al servidor  
-git log origin/master.. >>----> Igual que el anterior. Se asume master o HEAD  
-git log refA refB --not refC >>----> commits en refA y refB que no están en refC  
-git log master...experiment >>----> commits de master o experiment, pero sin ser comunes. Con –left-right indica a qué rama pertenece cada uno  
-  
-# Remotos >>----> Nuestro amigo de Github o similares.  
-git remote -v >>----> lista los repos remotos  
-git remote add [shortname] [url] >>----> crea nuevo remote, es posible descargar el contenido de ese repo con git fetch [shortname]. Master branch en [shortcode]/master  
-git fetch <remote> >>----> descarga trabajo nuevo a máquina local, no sobreescribe nada tuyo. ( git pull sí hace merge automaticamente si se esta realizando un seguimiento de esa branch)  
-git push [remote-name] [branch-name] >>----> sii nadie ha hecho push antes  
-git remote show [remote-name] >>----> inspecciona remote.  
-git remote rename <old-name> <new-name> >>----> también renombra branches: quedaría <new-name>/master  
-git remote rm <remote-name> >>----> p.e si el contribuidor ya no contribuye más  
 
-# Añadir varios repositorios remotos  
-git remote add bitbucket <url repositorio> >>----> Añadir un nuevo repositorio remoto con el nombre deseado. Por ejemplo si ya tenemos uno en github y queremos añadir otro para bitbucket  
-git push -u bitbucket -all >>----> Subir el proyecto a bitbucket. A partir de ahora se puede seleccionar a qué repo publicar con git push nombre_repo_remoto  
-  
-# Tag >>----> Marcar puntos importantes >>----> Releases  
-*Son puntos específicos en la historia como importantes. Generalmente la gente usa esta funcionalidad para marcar puntos donde se ha lanzado alguna versión (v1.0, y así sucesivamente)*  
-  
-git tag >>----> muestra las etiquetas actuales  
-git tag -l 'v1.4.2.*' >>----> acepta regex  
--- *Dos tipos de tag:*  
-.....1) *Lightweight : puntero a commit ( branch que no cambia )*  
-.....2) *Annotated : se almacenan como objetos en la db, con checksum, nombre del creador, email, fecha, mensaje, posibilidad de firmarla con GPG.*  
-git tag -a <tagname> -m 'mensaje' >>----> annotated tag  
-git show <tag-name> >>----> muestra información asociada.  
-git tag -s <tag-name> -m 'message' >>----> la firma con gpg  
-git tag <tag-name> >>----> lightweight tag  
-git tag -v <tag-name> >>----> verifica tags firmadas  
-git tag -a <tag-name> [commit-chksum] >>----> crea tag para commit con dicho chksum  
-*Por defecto no se transfieren los tags, para subirlos al servidor:*  
-git push origin [tag-name] >>----> una sola  
-git push origin --tags >>----> Enviar todas  
-Para usar GPG y firmar tags, hay que subir la clave pública al repositorio:  
-gpg --list-keys >>----> Coges la id pública  
-gpg -a --export <id> | git hash-object -w --stdin >>----> Copia el SHA-1 devuelto  
-git tag -a maintainer-gpg-pub <SHA-1>  
-git push --tags >>----> Comparte la clave con todos los usuarios  
-git show maintainer-gpg-pub | gpg --import >>----> Cada usuario importa la clave así  
-git show <tag> >>----> Devuelve más información sobre la etiqueta  
-git tag -d nombre_tag >>----> eliminar la etiqueta  
-git push origin :refs/tags/nombre_tag >>----> Eliminar la etiqueta del repositorio remoto.  
-  
-# "Branching" >>----> Ramas  
-Las ramas son la herramienta con la que comenzamos una nueva feature de código. Son muy importantes pues nos ayuda a organizar los proyectos a razón de las funciones que estamos implementando.  
-  
-git branch <nombre-rama> >>----> crea rama. Puntero al commit actual  
-git checkout <nombre-rama> >>----> cambiar a la rama especificada.  
-git checkout -b <nombre-rama> >>----> crea y cambia de rama  
-git merge <rama> >>----> Mezcla la rama actual con <rama>  
-git branch -d <rama> >>----> elimina la rama  
-git push origin --delete <branchName> >>----> Elimina una rama del servidor  
-git mergetool >>----> Herramienta gráfica para resolver conflictos  
-git branch >>----> lista ramas  
-git branch -v >>----> lista ramas mostrando último commit  
-git branch --merged >>----> lista ramas que han sido mezcladas con la actual. Si no tienen un *, pueden borrarse, ya que significa que se han incorporado los cambios en la rama actual.  
-git branch --no-merged >>----> lista ramas que no han sido incorporadas a la actual.  
-  
-# Ramas Remotas  
-  
-git fetch origin >>----> Descarga el contenido del servidor  
-git push <remote> <branch> >>----> Las ramas no se suben por defecto, has de subirlas explícitamente  
-git push <remote> <branch>:<nuevoNombre> >>----> Igual que la de arriba, pero en el servidor se llama a la rama con nuevoNombre en lugar de branch, antes en remoto recibia el mismo nombre, ahora recibe un nombre diferente en remoto que en local.  
-  
-*Cuando se hace un git fetch que trae consigo nuevas ramas remotas, no se disponen de ellas localmente, solo se dispone de un puntero a la rama remota que no es editable. Para poder trabajar sobre esa rama, es necesario crearla Por ejemplo:*  
-  
-git fetch origin >>----> Tras ejecutarlo, notamos que se ha creado una rama nueva (rama_nueva)  
-git checkout -b rama_nueva origin/rama_nueva >>----> Crea una rama local a partir de la remota  
-git merge origin/nueva_rama >>----> Equivalente a la de arriba, pero sin establecer el tracking a la rama  
-git push [remotename] :[branch] >>----> elimina una rama remota  
-git push [remotename] [localbranch]:[remotebranch] >>----> La rama en el servidor tiene distinto nombre a la local  
-  
-# Tracking Remote Branch  
-  
-git checkout --track origin/rama >>----> Equivalente a -b rama_nueva origin/rama_nueva  
-git chekout -b <nuevo_nombre> origin/<rama> >>----> Establece un nombre distinto para la rama local  
-  
-# ¿Rebase?  
-  
-*Rebase y merge se diferencian en que merge mezcla dos puntos finales de dos snapshots y rebase aplica cada uno de los cambios a la rama en la que se hace el rebase. No lo uses en repos publicos con mas colaboradores, porque todos los demas tendrán que hacer re-merges*  
-  
-1) git checkout <una rama>  
-2) git rebase master >>----> aplica todos los cambios de <una rama> a master  
-3) git merge master >>----> hay que hacer un merge de tipo fast forward  
-*Tenemos 3 ramas, master, client y server, en server y client tenemos varios commit y queremos mezclar client en master pero dejar server intacta:*  
--- git rebase --onto master server client >>----> adivina los patches del antecesor común de las ramas server y client y aplica los cambios a master.  
--- git checkout master  
--- git merge client >>----> fast-forward. Client y master en el mismo snapshot  
-Si se quiere aplicar también los cambios de server, basta con:  
-  
-1) git rebase master server  
-2) git checkout master  
-3) git merge server  
-4) git rebase [basebranch] [topicbranch] >>----> sintaxis de rebase  
-  
-*git rebase -i >>----> Rebase interactivo*  
-  
-# Recomendaciones  
-  
-**Siempre hay que hacer pull antes de push en caso de que alguien haya subido cambios al servidor**. Ejemplo:  
-  
--- User1 clona el repo y hace cambios, realiza un commit  
--- User2 clona el repo, hace cambios, hace commit y sube los cambios con push  
--- User1 intenta hacer push, pero será rechazado con: ! [rejected] master -> master (non-fast forward). No puede subir los cambios hasta que no mezcle el trabajo que ha subido User2. Así que debe hacer lo siguiente:  
-1) git fetch origin  
-2) git merge origin/master  
-3) git push origin master  
-  
-Mientras User1 hacía estas operaciones, User2 ha creado una rama issue54 y realizado 3 commits, sin haber descargado los cambios de User1. Para sincronizar el trabajo, User2 debe hacer:  
-  
-1) git fetch origin  
-2) git log --no-merges origin/master ^issue54 >>----> Observa qué cambios ha hecho User1  
-3) git checkout master  
-4) git merge issue54 && git merge origin/master  
-5) git push origin master  
-6) git diff --check >>----> Antes de hacer commit, ejecutar esto para ver si hemos añadido demasiados espacios que puedan causar problemas a los demás.  
-  
-**Commits pequeños que se centren en resolver un problema, no commits con grandes cambios.**  
-    
-El mensaje del commit debe tener la estructura siguiente:  
-Una linea de no más de 50 caracteres, seguida de otra línea en blanco seguida de una descripción completa del commit.  
-  
-# Me gusta tu proyecto quiero contribuir!!  
-1) git clone <url>  
-2) git checkout -b featureA  
-3) git commit  
-4) git remote add myFork <url>  
-5) git push myFork featureA  
-6) git request-pull origin/master myFork >>----> Esto es equivalente a realizar un pull request en el navegador.
-  
-Buena practica tener siempre una rama master que apunte a origin/master, para estar siempre actualizado con los ultimos cambios en el proyecto original. De este modo cada actulización que haga el propietario del proyecto estará disponible para nosotros. Es un modo de estar al día con los cambios que realicen otros miembros de la comunidad.  
+⸻
 
+## Setup
 
- © Victor Manuel Rodriguez Padilla ®
-          █║▌│█│║▌║││█║▌║▌║
+Identity, editor, defaults
+```bash
+git config --global user.name  "Your Name"
+git config --global user.email "you@email.com"
+git config --global core.editor "code --wait"     # or vim/nano
+git config --global init.defaultBranch main
+```
+Useful aliases
+```bash
+git config --global alias.st "status -sb"
+git config --global alias.lg "log --oneline --decorate --graph --all"
+git config --global alias.unstage "restore --staged"
+git config --global alias.last "log -1 --stat"
+```
+
+⸻
+
+## Daily loop
+```bash
+git status -sb
+git diff
+git add -p
+git commit -m "feat: do thing"
+git push
+```
+
+⸻
+
+## Stage changes
+```bash
+git add <file>
+git add <dir>
+git add -A                 # stage all (including deletes)
+git add -p                 # stage interactively (patch mode)
+git add -i                 # interactive staging menu
+```
+
+⸻
+
+## Commit
+```bash
+git commit -m "message"
+git commit -v              # show diff in editor
+git commit -a -m "message" # auto-stage tracked files only
+git commit --amend         # edit last commit (message and/or contents)
+
+Commit message convention
+	•	Title: <= 50 chars, imperative mood (e.g., “Fix login redirect”)
+	•	Blank line
+	•	Body: explain what and why (not how)
+```
+⸻
+
+## Undo & fix mistakes
+
+Discard local changes (working tree)
+```bash
+git restore <file>
+git restore .              # discard all unstaged changes
+```
+Unstage (keep changes in working tree)
+```bash
+git restore --staged <file>
+git restore --staged .     # unstage everything
+```
+Restore a file from a commit/branch
+```bash
+git restore --source <ref> -- <path>
+# example:
+git restore --source origin/main -- src/app.js
+```
+Undo commits
+
+Safe for shared branches: use revert
+```bash 
+git revert <commit>        # creates a new commit that undoes changes
+```
+Rewrite history (ONLY if not pushed/shared):
+```bash
+git reset --soft HEAD~1    # keep changes staged
+git reset --mixed HEAD~1   # keep changes unstaged (default)
+git reset --hard HEAD~1    # discard changes (danger)
+```
+“I messed up” recovery
+```bash
+git reflog                 # find lost commits/branches
+git reset --hard <reflog-ref>
+```
+
+⸻
+
+## Branches
+```bash
+git branch                 # list local branches
+git branch -vv             # show upstream/tracking info
+
+git switch <branch>
+git switch -c <new-branch> # create + switch
+git branch -d <branch>     # delete (safe)
+git branch -D <branch>     # delete (force)
+```
+
+⸻
+
+## Merge workflow
+
+Best when you want explicit merge commits, or your team prefers “no history rewriting”.
+
+Update your branch
+```bash
+git switch <branch>
+git fetch origin
+git merge origin/main      # or origin/master depending on repo
+```
+Merge a feature branch into main
+```bash
+git switch main
+git fetch origin
+git merge <feature-branch>
+git push origin main
+```
+If push is rejected (non-fast-forward)
+```bash
+git fetch origin
+git merge origin/<your-branch>
+git push
+```
+
+⸻
+
+## Rebase workflow
+
+Best to keep a linear history. Do not rebase commits that others already pulled.
+
+Update your branch with rebase
+```bash
+git switch <branch>
+git fetch origin
+git rebase origin/main
+```
+Preferred “pull” variant
+```bash
+git pull --rebase
+```
+Resolve conflicts during rebase
+
+# fix files
+```bash
+git add <fixed-files>
+git rebase --continue
+```
+# or to abort
+```bash
+git rebase --abort
+```
+Interactive rebase (clean up before PR)
+```bash
+git rebase -i origin/main
+# use: pick / reword / squash / fixup / drop
+```
+If you already pushed and rebased anyway
+
+You will likely need:
+```bash
+git push --force-with-lease
+```
+--force-with-lease is safer than --force.
+
+⸻
+
+## Remotes
+```bash
+git remote -v
+git remote add <name> <url>
+git remote rename <old> <new>
+git remote remove <name>
+git remote show origin
+```
+Fetch vs pull
+```bash
+git fetch origin            # download, no merge/rebase
+git pull                    # fetch + merge (by default)
+git pull --rebase           # fetch + rebase
+```
+Push basics
+```bash
+git push origin <branch>
+git push -u origin <branch> # set upstream
+```
+Delete remote branch
+```bash
+git push origin --delete <branch>
+# old syntax:
+git push origin :<branch>
+```
+Multiple remotes (GitHub + Bitbucket, etc.)
+```bash
+git remote add bitbucket <url>
+git push -u bitbucket <branch>
+git push bitbucket --all
+git push bitbucket --tags
+```
+
+⸻
+
+## Stash
+```bash
+git stash                   # stash tracked changes
+git stash push -m "wip"     # message
+git stash push -u -m "wip"  # include untracked files
+git stash list
+git stash show -p stash@{0}
+
+git stash apply stash@{0}   # apply without removing from stash
+git stash pop               # apply + remove latest
+git stash drop stash@{0}
+git stash clear
+```
+
+⸻
+
+## Logs & inspect
+```bash
+git log
+git log -p -2
+git log --stat
+git log --pretty=short
+git log --pretty=fuller
+git log --since="2 weeks ago"
+
+git log --oneline --decorate --graph --all
+git show <ref>
+git diff
+git diff --staged
+git diff <refA>..<refB>     # commits in refB not in refA
+git diff <refA>...<refB>    # changes since common ancestor
+
+git blame <file>
+git blame -L 20,60 <file>
+```
+What will I push?
+```bash
+git log origin/main..HEAD --oneline
+```
+
+⸻
+
+## Tags & releases
+```bash
+git tag
+git tag -l "v1.4.2*"
+
+git tag v1.0.0                     # lightweight
+git tag -a v1.0.0 -m "release 1.0"  # annotated
+
+git show v1.0.0
+git tag -d v1.0.0
+git push origin v1.0.0
+git push origin --tags
+git push origin :refs/tags/v1.0.0   # delete remote tag
+```
+
+⸻
+
+## Cleaning & maintenance
+```bash
+git clean -nd              # preview delete of untracked files/dirs
+git clean -fd              # delete untracked files/dirs (danger)
+
+git fetch --prune
+git remote prune origin
+```
+
+⸻
+
+## Emergencies (lifesavers)
+
+Cherry-pick (grab one commit)
+```bash
+git cherry-pick <commit>
+```
+Bisect (find the commit that introduced a bug)
+```bash
+git bisect start
+git bisect bad
+git bisect good <known-good-commit>
+# test, then:
+git bisect good
+git bisect bad
+git bisect reset
+```
+Conflicts checklist
+```bash
+	1.	git status to see conflicted files
+	2.	Fix conflict markers <<<<<<< ======= >>>>>>>
+	3.	git add <file>
+	4.	Continue:
+	  •	merge: git commit
+	  •	rebase: git rebase --continue
+```
+⸻
+
+## Contributing flow (fork + PR)
+```bash
+git clone <your-fork-url>
+cd repo
+
+git remote add upstream <original-repo-url>
+git fetch upstream
+
+git switch -c feature/my-change upstream/main
+# work...
+git add -p
+git commit -m "feat: add X"
+git push -u origin feature/my-change
+```
+Then open a Pull Request from origin/feature/my-change → upstream/main.
+
+⸻
